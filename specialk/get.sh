@@ -1,1 +1,1 @@
-git clone https://github.com/kennethshackleton/SpecialKEval.git source
+git clone https://github.com/kennethshackleton/SKPokerEval.git source
