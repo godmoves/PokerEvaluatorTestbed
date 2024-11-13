@@ -1,7 +1,5 @@
 
-#include "source/SevenEval.h"
-
-static SevenEval const* g_spk_evaluator = new SevenEval();
+#include "source/src/SevenEval.h"
 
 extern "C" {
 
@@ -13,7 +11,7 @@ int SPK_init() {
 
 
 unsigned short SPK_evaluate(Card* hand) {
-  return g_spk_evaluator->GetRank(hand[1],hand[2],hand[3],hand[4],hand[5],hand[6],hand[7]);
+  return SevenEval::GetRank(hand[1],hand[2],hand[3],hand[4],hand[5],hand[6],hand[7]);
 }
 
 
