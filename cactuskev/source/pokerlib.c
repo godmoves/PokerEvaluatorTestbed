@@ -1,35 +1,16 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "arrays.h"
 #include "poker.h"
 
 // Poker hand evaluator
 //
 // Kevin L. Suffecool
-// suffecool@bigfoot.com
+// kevin@suffe.cool
 //
 
-void    srand48();
-double  drand48();
-
-// perform a binary search on a pre-sorted array
-//
-int findit( int key )
-{
-    int low = 0, high = 4887, mid;
-
-    while ( low <= high )
-    {
-        mid = (high+low) >> 1;      // divide by two
-        if ( key < products[mid] )
-            high = mid - 1;
-        else if ( key > products[mid] )
-            low = mid + 1;
-        else
-            return( mid );
-    }
-    fprintf( stderr, "ERROR:  no match found; key = %d\n", key );
-    return( -1 );
-}
+void srand48();
+double drand48();
 
 //
 //   This routine initializes the deck.  A deck of cards is
@@ -51,12 +32,25 @@ int findit( int key )
 //   cdhs = suit of card
 //   b = bit turned on depending on rank of card
 //
-init_deck( int *deck )
+//   As an example, the Five of Hearts would be represented as
+//
+//   +--------+--------+--------+--------+
+//   |00000000|00001000|00100111|00000111| = 0x00082707
+//   +--------+--------+--------+--------+
+//
+//   and the Queen of Clubs would be represented as
+//
+//   +--------+--------+--------+--------+
+//   |00000100|00000000|10001010|00011111| = 0x04008A1F
+//   +--------+--------+--------+--------+
+//
+void
+init_deck(int *deck)
 {
     int i, j, n = 0, suit = 0x8000;
 
-    for ( i = 0; i < 4; i++, suit >>= 1 )
-        for ( j = 0; j < 13; j++, n++ )
+    for (i = 0; i < 4; i++, suit >>= 1)
+        for (j = 0; j < 13; j++, n++)
             deck[n] = primes[j] | (j << 8) | suit | (1 << (16+j));
 }
 
@@ -67,17 +61,17 @@ init_deck( int *deck )
 //  then it returns -1
 //
 int
-find_card( int rank, int suit, int *deck )
+find_card(int rank, int suit, int *deck)
 {
-	int i, c;
+    int i, c;
 
-	for ( i = 0; i < 52; i++ )
-	{
-		c = deck[i];
-		if ( (c & suit)  &&  (RANK(c) == rank) )
-			return( i );
-	}
-	return( -1 );
+    for (i = 0; i < 52; i++)
+    {
+        c = deck[i];
+        if ((c & suit) && (RANK(c) == rank))
+            return i;
+    }
+    return -1;
 }
 
 
@@ -85,92 +79,108 @@ find_card( int rank, int suit, int *deck )
 //  This routine takes a deck and randomly mixes up
 //  the order of the cards.
 //
-shuffle_deck( int *deck )
+void
+shuffle_deck(int *deck)
 {
     int i, n, temp[52];
 
-    for ( i = 0; i < 52; i++ )
+    for (i = 0; i < 52; i++)
         temp[i] = deck[i];
 
-    for ( i = 0; i < 52; i++ )
+    for (i = 0; i < 52; i++)
     {
         do {
             n = (int)(51.9999999 * drand48());
-        } while ( temp[n] == 0 );
+        } while (temp[n] == 0);
         deck[i] = temp[n];
         temp[n] = 0;
     }
 }
 
 
-print_hand( int *hand, int n )
+//
+//  This routine prints the given hand as a string; e.g.
+//  Ac 4d 7c Jh 2s
+//
+void
+print_hand(int *hand, int n)
 {
     int i, r;
     char suit;
     static char *rank = "23456789TJQKA";
 
-    for ( i = 0; i < n; i++ )
+    for (i = 0; i < n; i++, hand++)
     {
         r = (*hand >> 8) & 0xF;
-        if ( *hand & 0x8000 )
+        if (*hand & 0x8000)
             suit = 'c';
-        else if ( *hand & 0x4000 )
+        else if (*hand & 0x4000)
             suit = 'd';
-        else if ( *hand & 0x2000 )
+        else if (*hand & 0x2000)
             suit = 'h';
         else
             suit = 's';
 
-        printf( "%c%c ", rank[r], suit );
-        hand++;
+        printf("%c%c ", rank[r], suit);
     }
 }
 
 
+// Returns the hand rank of the given equivalence class value.
+// Note: the parameter "val" should be in the range of 1-7462.
 int
-hand_rank( short val )
+hand_rank(unsigned short val)
 {
-    if (val > 6185) return(HIGH_CARD);        // 1277 high card
-    if (val > 3325) return(ONE_PAIR);         // 2860 one pair
-    if (val > 2467) return(TWO_PAIR);         //  858 two pair
-    if (val > 1609) return(THREE_OF_A_KIND);  //  858 three-kind
-    if (val > 1599) return(STRAIGHT);         //   10 straights
-    if (val > 322)  return(FLUSH);            // 1277 flushes
-    if (val > 166)  return(FULL_HOUSE);       //  156 full house
-    if (val > 10)   return(FOUR_OF_A_KIND);   //  156 four-kind
-    return(STRAIGHT_FLUSH);                   //   10 straight-flushes
+    if (val > 6185) return HIGH_CARD;        // 1277 high card
+    if (val > 3325) return ONE_PAIR;         // 2860 one pair
+    if (val > 2467) return TWO_PAIR;         //  858 two pair
+    if (val > 1609) return THREE_OF_A_KIND;  //  858 three-kind
+    if (val > 1599) return STRAIGHT;         //   10 straights
+    if (val > 322)  return FLUSH;            // 1277 flushes
+    if (val > 166)  return FULL_HOUSE;       //  156 full house
+    if (val > 10)   return FOUR_OF_A_KIND;   //  156 four-kind
+    return STRAIGHT_FLUSH;                   //   10 straight-flushes
+}
+
+// Perform a perfect hash lookup (courtesy of Paul Senzee).
+static unsigned
+find_fast(unsigned u)
+{
+    unsigned a, b, r;
+
+    u += 0xe91aaa35;
+    u ^= u >> 16;
+    u += u << 8;
+    u ^= u >> 4;
+    b  = (u >> 8) & 0x1ff;
+    a  = (u + (u << 2)) >> 19;
+    r  = a ^ hash_adjust[b];
+    return r;
 }
 
 
-short
-eval_5cards( int c1, int c2, int c3, int c4, int c5 )
+static unsigned short
+eval_5cards(int c1, int c2, int c3, int c4, int c5)
 {
-    int q;
+    int q = (c1 | c2 | c3 | c4 | c5) >> 16;
     short s;
 
-    q = (c1|c2|c3|c4|c5) >> 16;
+    // This checks for Flushes and Straight Flushes
+    if (c1 & c2 & c3 & c4 & c5 & 0xf000)
+        return flushes[q];
 
-    /* check for Flushes and StraightFlushes
-    */
-    if ( c1 & c2 & c3 & c4 & c5 & 0xF000 )
-	return( flushes[q] );
+    // This checks for Straights and High Card hands
+    if ((s = unique5[q]))
+        return s;
 
-    /* check for Straights and HighCard hands
-    */
-    s = unique5[q];
-    if ( s )  return ( s );
-
-    /* let's do it the hard way
-    */
-    q = (c1&0xFF) * (c2&0xFF) * (c3&0xFF) * (c4&0xFF) * (c5&0xFF);
-    q = findit( q );
-
-    return( values[q] );
+    // This performs a perfect-hash lookup for remaining hands
+    q = (c1 & 0xff) * (c2 & 0xff) * (c3 & 0xff) * (c4 & 0xff) * (c5 & 0xff);
+    return hash_values[find_fast(q)];
 }
 
 
-short
-eval_5hand( int *hand )
+unsigned short
+eval_5hand(int *hand)
 {
     int c1, c2, c3, c4, c5;
 
@@ -180,7 +190,7 @@ eval_5hand( int *hand )
     c4 = *hand++;
     c5 = *hand;
 
-    return( eval_5cards(c1,c2,c3,c4,c5) );
+    return eval_5cards(c1, c2, c3, c4, c5);
 }
 
 
@@ -188,18 +198,19 @@ eval_5hand( int *hand )
 // best five-card hand possible out of seven cards.
 // I am working on a faster algorithm.
 //
-short
-eval_7hand( int *hand )
+unsigned short
+eval_7hand(int *hand)
 {
-    int i, j, q, best = 9999, subhand[5];
+    int i, j, subhand[5];
+    unsigned short q, best = 9999;
 
-	for ( i = 0; i < 21; i++ )
-	{
-		for ( j = 0; j < 5; j++ )
-			subhand[j] = hand[ perm7[i][j] ];
-		q = eval_5hand( subhand );
-		if ( q < best )
-			best = q;
-	}
-	return( best );
+    for (i = 0; i < 21; i++)
+    {
+        for (j = 0; j < 5; j++)
+            subhand[j] = hand[ perm7[i][j] ];
+        q = eval_5hand(subhand);
+        if (q < best)
+            best = q;
+    }
+    return best;
 }
