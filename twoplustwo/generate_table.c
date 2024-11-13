@@ -10,7 +10,7 @@
 
 //#include "windows.h"
 //#include <tchar.h>
-#include "../cactuskev/source/poker.h"
+#include "../perfecthash/source/poker.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
