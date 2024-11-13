@@ -7,6 +7,7 @@ Change to the cloned directory.
 
 ~~~~
 ./getall.sh
+mkdir build
 make tables
 make all
 ./runall.sh

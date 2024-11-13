@@ -12,7 +12,7 @@ A open test framework and speed comparison of seven card poker hand evaluators i
 
 ## What do I do with it?
 
-1. View existing results]
+1. [View existing results](./wiki/sample_result)
 
       ![Sample Result](./wiki/sample_result.png "Example") 
 
@@ -40,23 +40,23 @@ There is a script to collect and plot the results. `python plot.py trials`
 
 ## Evaluators Tested:
 Some of the links for source code downloads are currently inaccessible. Therefore, to facilitate the process, I have included these source codes directly in this repository for your convenience.
-- [CactusKev](cactuskev/README.md)
-- [TwoPlusTwo](twoplustwo/README.md)
-- [Paul Senzee's 7-Card](senzee/README.md)
-- [PokerSource](pokersource/README.md)
-- [Ace Eval](ace_eval/README.md)
-- [PerfectHash for CactusKev](perfecthash/README.md)
+- KEV: [CactusKev](cactuskev/README.md)
+- TPT: [TwoPlusTwo](twoplustwo/README.md)
+- SNZ: [Paul Senzee's 7-Card](senzee/README.md)
+- PSE: [PokerSource](pokersource/README.md)
+- ACE: [Ace Eval](ace_eval/README.md)
+- PHK: [PerfectHash for CactusKev](perfecthash/README.md)
 
 
 ## Source Code Not Found:
 I haven't been able to locate the source codes for the following projects, therefore I'm unable to update the speed results for these projects. If you happen to have a copy of the source codes, I would appreciate if you could share them with me through the issue.
-- [Steve Brecher's Holdem Showdown](showdown/README.md)
-- [Moritz Hammer](hammer/README.md)
+- BHS: [Steve Brecher's Holdem Showdown](showdown/README.md)
+- HAM: [Moritz Hammer](hammer/README.md)
 
 ## Coming In The Future
-- [SpecialK](https://github.com/kennethshackleton/SKPokerEval)
-- [PokerStove](https://github.com/andrewprock/pokerstove)
-- [OPMEval](https://github.com/zekyll/OMPEval)
+- SPK: [SpecialK](https://github.com/kennethshackleton/SKPokerEval)
+- PKS: [PokerStove](https://github.com/andrewprock/pokerstove)
+- OPM: [OPMEval](https://github.com/zekyll/OMPEval)
 
 
 ### Licence
