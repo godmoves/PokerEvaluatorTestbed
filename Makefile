@@ -4,7 +4,7 @@ FLAGS = -O3 -s
 BUILDDIR = build
 
 
-all: ace tpt kev pse snz phk null_eval spk ham
+all: ace tpt kev pse snz phk null_eval spk ham bhs
 
 tables: tpt_tables.dat snz_tables.dat ham_table1.dat
 
@@ -34,10 +34,10 @@ phk:
 hes:
 	gcc -DTESTHES=1  $(LIBS) $(FLAGS) speed_test.c showdown/HandEval.c -o$(BUILDDIR)/hes
 
-# bhs:
-# 	gcc -DTESTBHS=1  $(LIBS) $(FLAGS) speed_test.c showdown/source/HandEval.c -o$(BUILDDIR)/bhs
-# bhs_sz:
-# 	gcc -DTESTBHS=1 -s $(FLAGS) miniparse.c showdown/source/HandEval.c -o$(BUILDDIR)/bhs_sz
+bhs:
+	gcc -DTESTBHS=1  $(LIBS) $(FLAGS) speed_test.c showdown/source/HandEval.c -o$(BUILDDIR)/bhs
+bhs_sz:
+	gcc -DTESTBHS=1 -s $(FLAGS) miniparse.c showdown/source/HandEval.c -o$(BUILDDIR)/bhs_sz
 
 pse:
 	gcc -DTESTPSE=1  $(LIBS) $(FLAGS) speed_test.c -static -Lpokersource/source/lib/.libs -Ipokersource/source/include -lpoker-eval -o$(BUILDDIR)/pse
