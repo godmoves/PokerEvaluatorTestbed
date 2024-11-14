@@ -15,8 +15,8 @@ typedef Card* Hand;
 #define HAMHAND 8
 static int HAM_init() { 
   //todo: add local version of these loaders with error checking and combined file
-  load_equivalenceclasses("./ham_table1.dat"); 
-  load_dag("./ham_table2.dat");
+  load_equivalenceclasses("./build/ham_table1.dat"); 
+  load_dag("./build/ham_table2.dat");
   return 0;
 }
 static inline Card HAM_makecard(int i){return (((i%13)<<2)|(i/13));}

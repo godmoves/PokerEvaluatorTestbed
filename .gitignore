@@ -2,3 +2,6 @@ ace_eval/source
 pokersource/source
 pokersource/ltmain.sh
 specialk/source/
+specialk/*.a
+specialk/*.o
+build

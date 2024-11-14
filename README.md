@@ -46,15 +46,15 @@ Some of the links for source code downloads are currently inaccessible. Therefor
 - PSE: [PokerSource](pokersource/README.md)
 - ACE: [Ace Eval](ace_eval/README.md)
 - PHK: [PerfectHash for CactusKev](perfecthash/README.md)
+- SPK: [SpecialK](https://github.com/kennethshackleton/SKPokerEval)
+- HAM: [Moritz Hammer](hammer/README.md)
 
 
 ## Source Code Not Found:
 I haven't been able to locate the source codes for the following projects, therefore I'm unable to update the speed results for these projects. If you happen to have a copy of the source codes, I would appreciate if you could share them with me through the issue.
 - BHS: [Steve Brecher's Holdem Showdown](showdown/README.md)
-- HAM: [Moritz Hammer](hammer/README.md)
 
 ## Coming In The Future
-- SPK: [SpecialK](https://github.com/kennethshackleton/SKPokerEval)
 - PKS: [PokerStove](https://github.com/andrewprock/pokerstove)
 - OPM: [OPMEval](https://github.com/zekyll/OMPEval)
 
