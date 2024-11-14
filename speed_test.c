@@ -164,9 +164,9 @@ float report(const char* typestr, sysTime_t timings, sysTime_t endtimings, clock
   double clocksused = platformSysTimeToMs(platformTimeElapsed(endtimings,timings));
   float mhps = count/((double)clocksused/1000)/1000000.0;
 
-  printf("\nValidation seconds = %.4lf\nTotal HighPrecision Clocks = %lf\n"
+  printf("\nValidation count = %d\nValidation seconds = %.4lf\nTotal HighPrecision Clocks = %lf\n"
          "HighPrecision clocks per lookup = %lf\n", 
-         (double)timer/CLOCKS_PER_SEC, clocksused, (double) clocksused /  count) ;
+         count, (double)timer/CLOCKS_PER_SEC, clocksused, (double) clocksused /  count) ;
 
   printf("\n %lf Mhands/sec (%s)\n",mhps,typestr);
   return mhps;
@@ -297,8 +297,8 @@ int main(int argc, char*argv[])
         if (handTypeSum[i]!=expected_freq_7[r]) {
           printf("Error, should be %8d\n",expected_freq_7[r]);
         }
+        count+=expected_freq_7[r]; //TODO: need expected for N<7
       }
-    count+=expected_freq_7[r]; //TODO: need expected for N<7
   }
 
   speed[0]=report("Enumerated", timings,endtimings,timer,count);
