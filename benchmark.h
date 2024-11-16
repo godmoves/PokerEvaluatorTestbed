@@ -1,12 +1,12 @@
 #ifndef __BENCHMARK_H__
 #define __BENCHMARK_H__
 
+#include <array>
 #include <chrono>
 #include <iostream>
-#include <vector>
 #include <random>
-#include <array>
 #include <string>
+#include <vector>
 
 #include "pet_utils.h"
 
@@ -14,14 +14,15 @@
 //
 // Based on code collected in the XPokerEval library by James Devlin at:
 //   http://www.codingthewheel.com/archives/poker-hand-evaluator-roundup
-// original code from Ray Wouten, Steve Brecher, Kevin Suffecool 
-//   and others on twoplustwo.com.  
+// original code from Ray Wouten, Steve Brecher, Kevin Suffecool
+//   and others on twoplustwo.com.
 // See READMEs in individual directories for full credits
-//  
+//
 // This original C implementation
 // (c) 2015 Adam Shelly (github.com/ashelly)
-// The updated C++ implementation is inspired by https://github.com/zekyll/OMPEval/blob/master/benchmark.cpp
-// (c) 2024 Mankit Pong (github.com/godmoves)
+// The updated C++ implementation is inspired by
+// https://github.com/zekyll/OMPEval/blob/master/benchmark.cpp (c) 2024 Mankit
+// Pong (github.com/godmoves)
 
 template <typename TCard, typename TEquivClass> class BaseBenchmark {
 public:
@@ -29,7 +30,7 @@ public:
   typedef TEquivClass EquivClass;
 
   // Constructor, set the name of the evaluator.
-  BaseBenchmark(const std::string& name) : name_(name) {}
+  BaseBenchmark(const std::string &name) : name_(name) {}
 
   // Does any setup needed for the evaluator.
   // File reading, table creation, etc.
@@ -59,11 +60,12 @@ public:
     }
 
     // Benchmark evaluation
-    // test();
+    test();
     sequential<false>();
     random();
     // sequential<true>();
-    std::cout << "\n" << name_ << "\t" << speed_[0] << "\t" << speed_[1] << std::endl;
+    std::cout << "\n"
+              << name_ << "\t" << speed_[0] << "\t" << speed_[1] << std::endl;
   }
 
   // The number of Card items needed to represent a hand.
@@ -120,23 +122,12 @@ private:
       std::cout << "   " << pet_rank_str[i] << " = " << type_sum[i] / ITER
                 << std::endl;
     }
-    std::cout << "\nDo " << count / ITER << " * " << ITER
-              << " evals in " << t << "s, speed " << (1e-6 * count / t) << "M/s\n"
+    std::cout << "\nDo " << count / ITER << " * " << ITER << " evals in " << t
+              << "s, speed " << (1e-6 * count / t) << "M/s\n"
               << std::endl;
     if (!tSingleSuit) {
       speed_[0] = 1e-6 * count / t;
     }
-  }
-
-  void test() {
-    Card hand[HAND_SIZE];
-    for (int i = 0; i < 7; ++i) {
-      hand[i] = deck_[i];
-    }
-    EquivClass e = evaluate(hand);
-    std::cout << "EquivClass: " << e << std::endl;
-    int r = rank(e);
-    std::cout << "Rank: " << r << std::endl;
   }
 
   void random() {
@@ -173,7 +164,7 @@ private:
     auto t1 = std::chrono::high_resolution_clock::now();
 
     for (int t = 0; t < ITER; ++t) {
-      for (auto& hand : hands) {
+      for (auto &hand : hands) {
         EquivClass e = evaluate(hand.data());
         sum += rank(e);
         ++count;
@@ -188,6 +179,61 @@ private:
     std::cout << "Do " << count << " evals in " << t << "s, speed "
               << (1e-6 * count / t) << "M/s" << std::endl;
     speed_[1] = 1e-6 * count / t;
+  }
+
+  void test() {
+    std::cout << "Testing..." << std::endl;
+    // high card
+    verify(c2H, c3H, c4H, c5H, cTD, cJD, cKD, rHighCard);
+    // one pair
+    verify(cKH, c3H, c4H, c5H, cAD, cJD, cKD, rPair);
+    // two pairs
+    verify(cKD, c3H, c3C, c5H, cAD, cJD, cKS, rTwoPair);
+    verify(cKD, c3H, c3C, c5H, c5S, c2D, cKS, rTwoPair);
+    // three of a kind
+    verify(c3D, c4D, c6H, c3H, c9S, c3C, cTD, rThreeOfaKind);
+    // straight
+    verify(c3D, c4D, c9H, c5H, c2D, c3C, cAD, rStraight);
+    verify(c3D, c4D, c6H, c5H, c2D, c3C, cAD, rStraight);
+    verify(c3D, c4D, c6H, c5H, c2D, c7C, cAD, rStraight);
+    verify(cTD, cJD, cKH, c5H, cQD, c3C, cAD, rStraight);
+    // flush
+    verify(c2H, c3H, c4H, c5H, cTD, cJH, cKD, rFlush);
+    verify(cKH, c3H, c4H, c5H, cAH, cJD, cKD, rFlush);
+    verify(cKD, c3H, c3D, c5D, cAD, cJD, cKS, rFlush);
+    verify(c3D, c4D, c6D, c3H, c9D, c3C, cTD, rFlush);
+    verify(c3D, c4D, c6D, c3H, c9D, c2D, cTD, rFlush);
+    verify(c3D, c4D, c6D, c7D, c9D, cJD, cTD, rFlush);
+    // full house
+    verify(c3D, c4D, c3H, c4H, c9S, c3C, cTD, rFullHouse);
+    verify(c4S, c4D, c6H, c4H, c3S, c3C, cTD, rFullHouse);
+    verify(c3D, c9D, c9H, c3H, c9S, c3C, cTD, rFullHouse);
+    // four of a kind
+    verify(c3D, c9D, c9H, c3H, c3S, c3C, cTD, rFourOfaKind);
+    // straight flush
+    verify(cAH, c2H, c3H, c4H, c5H, c9D, cTD, rStraightFlush);
+    verify(cAD, c2H, c3H, cJD, cKD, cQD, cTD, rStraightFlush);
+    verify(c9D, c7D, c8D, cJD, cKD, cQD, cTD, rStraightFlush);
+    std::cout << std::endl << std::endl;
+  }
+
+  void verify(pet_card a, pet_card b, pet_card c, pet_card d, pet_card e,
+              pet_card f, pet_card g, pet_rank expected) {
+    Card hand[HAND_SIZE] = {0};
+    addcard(hand, makecard(a));
+    addcard(hand, makecard(b));
+    addcard(hand, makecard(c));
+    addcard(hand, makecard(d));
+    addcard(hand, makecard(e));
+    addcard(hand, makecard(f));
+    addcard(hand, makecard(g));
+    EquivClass v = evaluate(hand);
+    int actual = rank(v);
+    if (actual == expected) {
+      std::cout << "ok..";
+    } else {
+      std::cout << "Error: rank " << actual << " != " << expected << std::endl;
+    }
   }
 
   Card deck_[52] = {0};
