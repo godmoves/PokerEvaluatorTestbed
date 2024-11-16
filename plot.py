@@ -7,18 +7,12 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-#the size of an evaluator which does nothing
-try:
-    NULSZ = os.stat('null_eval').st_size;
-except:
-    NULSZ = 0;
-
 def getsize(name):
     """ gets the size of an evaluator and associated tables"""
     sz =0
     name = name.lower()
     try:
-        sz = os.stat("build/"+name).st_size - NULSZ
+        sz = os.stat("build/"+name).st_size
         for datfilename in glob.glob("build/"+name+"_table?.dat"):
             sz += os.stat(datfilename).st_size
     except OSError:

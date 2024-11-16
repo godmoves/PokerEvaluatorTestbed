@@ -1,67 +1,56 @@
-LIBS = -lrt
-FLAGS = -O3 -s 
-#FLAGS = -g 
+LIBS = -lrt -lstdc++
+# FLAGS = -O2 -pg -g
+FLAGS = -O3 -s -flto
 BUILDDIR = build
 
-
-all: ace tpt kev pse snz phk null_eval spk ham bhs
+all: ace tpt kev pse snz phk spk omp bhs ham naive
 
 tables: tpt_tables.dat snz_tables.dat ham_table1.dat
 
-
-null_eval:
-	gcc -DTESTNUL=1 $(LIBS) $(FLAGS) speed_test.c  -o$(BUILDDIR)/null_eval
-null_sz:
-	gcc -DTESTNUL=1 -s $(FLAGS) miniparse.c  -o$(BUILDDIR)/null_sz
+omp:
+	g++ $(LIBS) $(FLAGS) ompeval/OMP_benchmark.cpp ompeval/source/omp/HandEvaluator.cpp -o$(BUILDDIR)/omp
 
 ace:
-	gcc -DTESTACE=1 $(LIBS) $(FLAGS) speed_test.c ace_eval/source/ace_eval_best.c -o$(BUILDDIR)/ace
-ace_sz:
-	gcc -DTESTACE=1 -s $(FLAGS) miniparse.c ace_eval/source/ace_eval_best.c -oace_sz
-
-tpt: $(BUILDDIR)/tpt_tables.dat
-	gcc -DTESTTPT=1 $(LIBS) $(FLAGS) speed_test.c twoplustwo/TPT_eval.c -o$(BUILDDIR)/tpt
-
-tpt_tables.dat:
-	gcc twoplustwo/generate_table.c --std=c99 perfecthash/source/fast_eval.c perfecthash/source/pokerlib.c -o$(BUILDDIR)/generate_table && $(BUILDDIR)/generate_table && mv tpt_tables.dat $(BUILDDIR)
-
-kev:
-	gcc -DTESTKEV=1 $(LIBS) $(FLAGS) speed_test.c cactuskev/source/pokerlib.c -o$(BUILDDIR)/kev
-
-phk:
-	gcc -DTESTPHK=1 $(LIBS) $(FLAGS) speed_test.c perfecthash/PHK_eval.c perfecthash/source/fast_eval.c cactuskev/source/pokerlib.c -o$(BUILDDIR)/phk
-
-hes:
-	gcc -DTESTHES=1  $(LIBS) $(FLAGS) speed_test.c showdown/HandEval.c -o$(BUILDDIR)/hes
+	g++ $(LIBS) $(FLAGS) ace_eval/ACE_benchmark.cpp -o$(BUILDDIR)/ace
 
 bhs:
-	gcc -DTESTBHS=1  $(LIBS) $(FLAGS) speed_test.c showdown/source/HandEval.c -o$(BUILDDIR)/bhs
-bhs_sz:
-	gcc -DTESTBHS=1 -s $(FLAGS) miniparse.c showdown/source/HandEval.c -o$(BUILDDIR)/bhs_sz
+	g++ $(LIBS) $(FLAGS) showdown/BHS_benchmark.cpp showdown/source/HandEval.c -o$(BUILDDIR)/bhs
+
+kev:
+	g++ $(LIBS) $(FLAGS) cactuskev/KEV_benchmark.cpp -o$(BUILDDIR)/kev
+
+phk:
+	gcc -O3 -c perfecthash/source/fast_eval.c -operfecthash/source/fast_eval.o
+	g++ $(LIBS) $(FLAGS) perfecthash/PHK_benchmark.cpp perfecthash/source/fast_eval.o -o$(BUILDDIR)/phk
+
+spk:
+	g++ -O3 -c specialk/source/src/FiveEval.cpp -o specialk/source/src/FiveEval.o
+	g++ $(LIBS) $(FLAGS) specialk/SPK_benchmark.cpp specialk/source/src/FiveEval.o -o$(BUILDDIR)/spk
 
 pse:
-	gcc -DTESTPSE=1  $(LIBS) $(FLAGS) speed_test.c -static -Lpokersource/source/lib/.libs -Ipokersource/source/include -lpoker-eval -o$(BUILDDIR)/pse
-
-snz: $(BUILDDIR)/snz_tables.dat
-	gcc -DTESTSNZ=1  $(LIBS) $(FLAGS) speed_test.c senzee/SNZ_eval.c -o$(BUILDDIR)/snz
-
-snz_tables.dat:
-	gcc -DTESTSNZ=1  $(LIBS) $(FLAGS) senzee/build_table.c cactuskev/source/pokerlib.c -o$(BUILDDIR)/build_table && $(BUILDDIR)/build_table && mv snz_tables.dat $(BUILDDIR)
-
-ham: ham_table1.dat
-	gcc -DTESTHAM=1  $(LIBS) $(FLAGS) speed_test.c hammer/source/handeval/handevaluator.c -o$(BUILDDIR)/ham
+	g++ $(LIBS) $(FLAGS) pokersource/PSE_benchmark.cpp -static -Lpokersource/source/lib/.libs -Ipokersource/source/include -lpoker-eval -o$(BUILDDIR)/pse
 
 ham_table1.dat:
 	cp hammer/source/handeval/eqcllist ./$(BUILDDIR)/ham_table1.dat && cp hammer/source/handeval/carddag ./$(BUILDDIR)/ham_table2.dat
 
-specialk/libspecialk.a:
-	g++ -c specialk/SPK_eval.cpp -o  specialk/SPK_eval.o
-	g++ -c specialk/source/src/FiveEval.cpp  -o specialk/FiveEval.o
-	ar crf specialk/libspecialk.a specialk/FiveEval.o specialk/SPK_eval.o
+ham: $(BUILDDIR)/ham_table1.dat
+	gcc -O3 -c hammer/source/handeval/handevaluator.c -ohammer/source/handeval/handevaluator.o
+	g++ $(LIBS) $(FLAGS) hammer/HAM_benchmark.cpp hammer/source/handeval/handevaluator.o -o$(BUILDDIR)/ham
 
-spk: specialk/libspecialk.a
-	g++ -DTESTSPK=1 -lstdc++  $(LIBS) $(FLAGS) -x c speed_test.c  -Lspecialk -lspecialk  -Ispecialk/source -o$(BUILDDIR)/spk
+tpt_tables.dat:
+	gcc -O3 twoplustwo/generate_table.c --std=c99 perfecthash/source/fast_eval.c perfecthash/source/pokerlib.c -o$(BUILDDIR)/generate_table && $(BUILDDIR)/generate_table && mv tpt_tables.dat $(BUILDDIR)
 
+tpt: $(BUILDDIR)/tpt_tables.dat
+	g++ $(LIBS) $(FLAGS) twoplustwo/TPT_benchmark.cpp -o$(BUILDDIR)/tpt
+
+snz_tables.dat:
+	gcc -O3 senzee/build_table.c cactuskev/source/pokerlib.c -o$(BUILDDIR)/build_table && $(BUILDDIR)/build_table && mv snz_tables.dat $(BUILDDIR)
+
+snz: $(BUILDDIR)/snz_tables.dat
+	g++ $(LIBS) $(FLAGS) senzee/SNZ_benchmark.cpp -o$(BUILDDIR)/snz
+
+naive:
+	g++ $(LIBS) $(FLAGS) naive_benchmark.cpp -o$(BUILDDIR)/naive
 
 clean:
-	rm $(BUILDDIR)/*
+	rm -f $(BUILDDIR)/*

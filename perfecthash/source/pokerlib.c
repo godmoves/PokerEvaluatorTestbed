@@ -9,8 +9,9 @@
 // kevin@suffe.cool
 //
 
-void srand48();
-double drand48();
+// TODO(mkp): this is commented out due to conflicts with the std library
+// void srand48();
+// double drand48();
 
 //
 //   This routine initializes the deck.  A deck of cards is

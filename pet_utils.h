@@ -68,4 +68,17 @@ static inline short petcard_value(pet_card c) { return c%13;}
 //returns card suit: 0..3 = C..S
 static inline short petcard_suit(pet_card c) { return c/13;}
 
+static int expected_freq_7[] = {
+  0,
+  23294460,
+  58627800,
+  31433400,
+  6461620,
+  6180020,
+  4047644,
+  3473184,
+  224848,
+  41584
+};
+
 #endif

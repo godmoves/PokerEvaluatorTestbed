@@ -49,11 +49,11 @@ Some of the links for source code downloads are currently inaccessible. Therefor
 - SPK: [SpecialK](https://github.com/kennethshackleton/SKPokerEval)
 - HAM: [Moritz Hammer](hammer/README.md)
 - BHS: [Steve Brecher's Holdem Showdown](showdown/README.md)
+- OPM: [OPMEval](https://github.com/zekyll/OMPEval)
 
 
 ## Coming In The Future
 - PKS: [PokerStove](https://github.com/andrewprock/pokerstove)
-- OPM: [OPMEval](https://github.com/zekyll/OMPEval)
 
 
 ### Licence
