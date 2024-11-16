@@ -12,7 +12,7 @@ A open test framework and speed comparison of seven card poker hand evaluators i
 
 ## What do I do with it?
 
-1. [View existing results](./wiki/sample_result)
+1. [View existing result numbers](./wiki/sample_result)
 
       ![Sample Result](./wiki/sample_result.png "Example") 
 
@@ -25,17 +25,17 @@ A open test framework and speed comparison of seven card poker hand evaluators i
 
 ## How does it work?
 
-The framework provides a C adaptor for each evaluator to give it a uniform interface.  Each Evaluator Under Test (EUT) is assigned a unique 3 letter abbreviation,  and implements the api defined in `PET_evaluator.h`. A set of macros in that header translates the API names to the evaluator's names so that we can use the same test harness for all of them.  See Interface.md for more details
+The framework provides a C++ adaptor for each evaluator to give it a uniform interface.  Each Evaluator Under Test (EUT) is assigned a unique 3 letter abbreviation,  and implements the api defined by `BaseBenchmark` in `benchmark.h`. See [How to add more evaluators](./wiki/howtoaddevaluators.md) and [Interface.md](./wiki/Interface.md) for more details
 
 
 It runs each evaluator through two tests, and times the performance for:
 
 * Enumerating every possible 7 card hand.
   * This test includes the cost of adding cards to the hand.
-* Enumerating lots (50,000,000 by default) of random hands.
+* Enumerating lots (100,000,000 by default) of random hands.
   * This one creates the hands and calls `addcard` outside the timing loop.
 
-There is a script to collect and plot the results. `python plot.py trials`
+There is a script to collect and plot the results. `python plot.py sample_result`
 
 
 ## Evaluators Tested:

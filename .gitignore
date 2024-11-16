@@ -1,7 +1,8 @@
 ace_eval/source
 pokersource/source
 pokersource/ltmain.sh
-specialk/source/
+specialk/source
+ompeval/source
 *.a
 *.o
 build
