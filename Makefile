@@ -10,6 +10,18 @@ tables: tpt_tables.dat snz_tables.dat ham_table1.dat
 omp:
 	g++ $(LIBS) $(FLAGS) ompeval/OMP_benchmark.cpp ompeval/source/omp/HandEvaluator.cpp -o$(BUILDDIR)/omp
 
+pokerstove/libpokerstove.a:
+	g++ $(LIBS) $(FLAGS) pokerstove/source/src/lib/pokerstove/peval/Card.cpp -c -o pokerstove/Card.o
+	g++ $(LIBS) $(FLAGS) pokerstove/source/src/lib/pokerstove/peval/CardSet.cpp -Ipokerstove/source/src/lib -c -o pokerstove/CardSet.o
+	g++ $(LIBS) $(FLAGS) pokerstove/source/src/lib/pokerstove/peval/PokerEvaluation.cpp -Ipokerstove/source/src/lib -c -o pokerstove/PokerEvaluation.o
+	g++ $(LIBS) $(FLAGS) pokerstove/source/src/lib/pokerstove/peval/Rank.cpp -c -o pokerstove/Rank.o
+	g++ $(LIBS) $(FLAGS) pokerstove/source/src/lib/pokerstove/peval/Suit.cpp -c -o pokerstove/Suit.o
+	g++ $(LIBS) $(FLAGS) pokerstove/source/src/lib/pokerstove/peval/PokerHandEvaluator.cpp -c -o pokerstove/PokerHandEvaluator.o
+	ar rcs pokerstove/libpokerstove.a pokerstove/Card.o pokerstove/CardSet.o pokerstove/PokerEvaluation.o pokerstove/Rank.o pokerstove/Suit.o pokerstove/PokerHandEvaluator.o
+
+pks: pokerstove/libpokerstove.a
+	g++ $(LIBS) $(FLAGS) pokerstove/PKS_benchmark.cpp -Lpokerstove -lpokerstove -Ipokerstove/source/src/lib -o$(BUILDDIR)/pks
+
 ace:
 	g++ $(LIBS) $(FLAGS) ace_eval/ACE_benchmark.cpp -o$(BUILDDIR)/ace
 

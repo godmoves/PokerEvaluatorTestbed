@@ -3,6 +3,7 @@ pokersource/source
 pokersource/ltmain.sh
 specialk/source
 ompeval/source
+pokerstove/source
 *.a
 *.o
 build
